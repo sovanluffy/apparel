@@ -1,0 +1,64 @@
+@import "tailwindcss";
+@source "../";
+
+@font-face {
+  font-family: 'Questrial';
+  src: url('/assets/fonts/Questrial-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #000000;
+  --primary: #FF7700;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --font-questrial: 'Questrial', sans-serif;
+
+  --text-h1: 56px;
+  --text-h2: 35px;
+  --text-body: 16px;
+
+  --color-paragraph: #6B7280;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #000000;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-questrial);
+  font-size: var(--text-body);
+}
+
+h1 {
+  font-family: var(--font-questrial);
+  font-size: var(--text-h1);
+  line-height: 1.15;
+  color: var(--primary);
+}
+
+h2 {
+  font-family: var(--font-questrial);
+  font-size: var(--text-h2);
+  line-height: 1.2;
+  color: var(--primary);
+}
+
+p {
+  font-family: var(--font-questrial);
+  font-size: var(--text-body);
+  line-height: 1.6;
+  color: var(--color-paragraph);
+}
