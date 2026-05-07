@@ -1,4 +1,3 @@
-// src/components/sections/ServiceSection.tsx
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
@@ -7,9 +6,9 @@ import { services } from '@/constants/services'
 
 const getItemsPerPage = () => {
   if (typeof window === 'undefined') return 6
-  if (window.innerWidth < 640) return 3   // mobile: 3 cards (1 col × 3)
-  if (window.innerWidth < 1024) return 4  // tablet: 4 cards (2 col × 2)
-  return 6                                 // desktop: 6 cards (3 col × 2)
+  if (window.innerWidth < 640) return 3
+  if (window.innerWidth < 1024) return 4
+  return 6
 }
 
 const AUTO_INTERVAL = 30000
@@ -22,11 +21,9 @@ export default function ServiceSection() {
   const [displayPage, setDisplayPage] = useState(0)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
-  // Recalculate items per page on resize
   useEffect(() => {
     const update = () => {
-      const next = getItemsPerPage()
-      setItemsPerPage(next)
+      setItemsPerPage(getItemsPerPage())
       setCurrentPage(0)
       setDisplayPage(0)
     }
@@ -45,7 +42,7 @@ export default function ServiceSection() {
       setDisplayPage(next)
       setCurrentPage(next)
       setAnimating(false)
-    }, 380)
+    }, 350)
   }
 
   const prev = () => {
@@ -78,7 +75,7 @@ export default function ServiceSection() {
           return n
         })
         setAnimating(false)
-      }, 380)
+      }, 350)
     }, AUTO_INTERVAL)
   }
 
@@ -96,132 +93,119 @@ export default function ServiceSection() {
   const isNextDisabled = currentPage === totalPages - 1
 
   return (
-    <section className="w-full bg-[#F3F4F6] py-16 md:py-20 lg:py-24">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="w-full bg-[#FAFAF8] py-16 md:py-20 lg:py-24">
+      <div className="max-w-[1200px] mx-auto px-6 sm:px-10 lg:px-12">
 
         {/* ── Header ── */}
-        <div className="text-center mb-10 md:mb-14 relative">
-          {/* Skewed background accent */}
-          <div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -skew-x-12 w-48 md:w-72 h-16 md:h-24 bg-red-100 opacity-50 z-0 pointer-events-none"
-          />
-          <h2
-            className="relative z-10 text-3xl sm:text-4xl md:text-5xl font-normal text-black mb-3"
-            style={{ fontFamily: 'var(--font-questrial)' }}
-          >
-            Our Services
-          </h2>
-          <p
-            className="relative z-10 text-sm md:text-base text-[var(--color-paragraph)]"
-            style={{ fontFamily: 'var(--font-questrial)' }}
-          >
-            <span className="text-[var(--primary)] font-medium">I Apparel</span>{' '}
-            has the best professionals in the industry to handle all your garment needs
-          </p>
-        </div>
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between
+          gap-6 mb-12 md:mb-14">
 
-        {/* ── Grid + Arrows ── */}
-        <div className="relative flex items-center gap-2 sm:gap-0 sm:px-12">
-
-          {/* Left Arrow */}
-          <button
-            onClick={prev}
-            aria-label="Previous page"
-            className={`
-              flex-shrink-0 sm:absolute sm:left-0
-              flex items-center justify-center
-              w-9 h-9 sm:w-10 sm:h-10
-              transition-all duration-300
-              ${isPrevDisabled
-                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                : 'bg-[var(--primary)] text-white cursor-pointer hover:scale-110 active:scale-95'
-              }
-            `}
-          >
-            ←
-          </button>
-
-          {/* Cards grid */}
-          <div
-            className="flex-1 min-w-0"
-            style={{
-              transform: animating
-                ? `translateX(${direction === 'right' ? '-48px' : '48px'})`
-                : 'translateX(0)',
-              opacity: animating ? 0 : 1,
-              transition: 'transform 0.38s cubic-bezier(0.4,0,0.2,1), opacity 0.38s ease',
-            }}
-          >
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6">
-              {paginated.map((service, index) => (
-                <div
-                  key={`${displayPage}-${service.id}`}
-                  style={{
-                    opacity: animating ? 0 : 1,
-                    transform: animating ? 'translateY(8px)' : 'translateY(0)',
-                    transition: `opacity 0.38s ease ${index * 35}ms, transform 0.38s ease ${index * 35}ms`,
-                  }}
-                >
-                  <ServiceCard
-                    image={service.image}
-                    title={service.title}
-                    href={service.href}
-                  />
-                </div>
-              ))}
-            </div>
+          {/* Left — title block */}
+          <div>
+            <p className="text-primary uppercase text-[10px] tracking-[0.24em]
+              leading-none mb-3 font-normal">
+              What We Offer
+            </p>
+            <div className="w-8 h-px bg-primary/30 mb-4" />
+            <h2 className="text-foreground font-normal
+              text-[32px] sm:text-[38px] lg:text-h2
+              leading-[1.1] mb-3">
+              Our{' '}
+              <span className="text-primary">Services</span>
+            </h2>
+            <p className="text-paragraph text-[14px] leading-[1.7] max-w-[400px]">
+              <span className="text-primary">I Apparel</span>{' '}
+              has the best professionals in the industry to handle all your garment needs
+            </p>
           </div>
 
-          {/* Right Arrow */}
-          <button
-            onClick={next}
-            aria-label="Next page"
-            className={`
-              flex-shrink-0 sm:absolute sm:right-0
-              flex items-center justify-center
-              w-9 h-9 sm:w-10 sm:h-10
-              transition-all duration-300
-              ${isNextDisabled
-                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                : 'bg-[var(--primary)] text-white cursor-pointer hover:scale-110 active:scale-95'
-              }
-            `}
-          >
-            →
-          </button>
-
+          {/* Right — arrow controls */}
+          <div className="flex gap-0.5 shrink-0">
+            <button
+              onClick={prev}
+              aria-label="Previous page"
+              className={`
+                w-11 h-11 flex items-center justify-center text-[15px]
+                transition-all duration-200
+                ${isPrevDisabled
+                  ? 'bg-[#E5E7EB] text-[#9CA3AF] cursor-not-allowed'
+                  : 'bg-primary text-white hover:opacity-90 active:scale-95 cursor-pointer'
+                }
+              `}
+            >
+              ←
+            </button>
+            <button
+              onClick={next}
+              aria-label="Next page"
+              className={`
+                w-11 h-11 flex items-center justify-center text-[15px]
+                transition-all duration-200
+                ${isNextDisabled
+                  ? 'bg-[#E5E7EB] text-[#9CA3AF] cursor-not-allowed'
+                  : 'bg-primary text-white hover:opacity-90 active:scale-95 cursor-pointer'
+                }
+              `}
+            >
+              →
+            </button>
+          </div>
         </div>
 
-        {/* ── Dots + page counter ── */}
-        <div className="flex flex-col items-center gap-3 mt-8 md:mt-10">
+        {/* ── Cards grid ── */}
+        <div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5"
+          style={{
+            opacity: animating ? 0 : 1,
+            transform: animating
+              ? `translateX(${direction === 'right' ? '-32px' : '32px'})`
+              : 'translateX(0)',
+            transition: 'opacity 0.35s ease, transform 0.35s cubic-bezier(0.4,0,0.2,1)',
+          }}
+        >
+          {paginated.map((service, index) => (
+            <div
+              key={`${displayPage}-${service.id}`}
+              style={{
+                opacity: animating ? 0 : 1,
+                transform: animating ? 'translateY(6px)' : 'translateY(0)',
+                transition: `opacity 0.35s ease ${index * 30}ms,
+                             transform 0.35s ease ${index * 30}ms`,
+              }}
+            >
+              <ServiceCard
+                image={service.image}
+                title={service.title}
+                href={service.href}
+              />
+            </div>
+          ))}
+        </div>
 
-          {/* Dots */}
-          <div className="flex items-center gap-2">
+        {/* ── Dots + counter ── */}
+        <div className="flex flex-col items-center gap-2.5 mt-10">
+          <div className="flex items-center gap-1.5">
             {Array.from({ length: totalPages }).map((_, i) => (
               <button
                 key={i}
                 onClick={() => goToDot(i)}
                 aria-label={`Go to page ${i + 1}`}
-                className="transition-all duration-350"
                 style={{
-                  width: i === currentPage ? '36px' : '24px',
-                  height: '5px',
-                  transform: 'skewX(-20deg)',
-                  backgroundColor: i === currentPage ? 'var(--primary)' : '#D1D5DB',
-                  cursor: 'pointer',
+                  height: '4px',
+                  width: i === currentPage ? '32px' : '20px',
+                  background: i === currentPage ? 'var(--primary)' : '#D1D5DB',
+                  transform: 'skewX(-18deg)',
                   border: 'none',
                   padding: 0,
+                  cursor: i === currentPage ? 'default' : 'pointer',
                   transition: 'all 0.35s cubic-bezier(0.4,0,0.2,1)',
                 }}
               />
             ))}
           </div>
-
-          {/* Page counter — mobile only */}
-          <p className="sm:hidden text-[12px] text-gray-400 tracking-widest">
+          <p className="text-[11px] tracking-[0.12em] text-[#9CA3AF] sm:hidden">
             {currentPage + 1} / {totalPages}
           </p>
-
         </div>
 
       </div>

@@ -1,32 +1,8 @@
 // src/components/layout/Footer.tsx
 import { SOCIAL_LINKS } from '@/constants/social'
+import { LOCATIONS } from '@/constants/locations'
 
-const LOCATIONS = [
-  {
-    country: 'Singapore',
-    flag: '🇸🇬',
-    address: '7 Kallang place #02-08',
-    addressHref: 'https://maps.google.com/?q=7+Kallang+Place+Singapore',
-    phone: '+65 6292 9339',
-    phoneHref: 'tel:+6562929339',
-  },
-  {
-    country: 'Cambodia',
-    flag: '🇰🇭',
-    address: 'Kandal Steung District',
-    addressHref: 'https://maps.google.com/?q=Kandal+Steung+District+Cambodia',
-    phone: '+855 1789 2177',
-    phoneHref: 'tel:+85517892177',
-  },
-  {
-    country: 'Hong Kong',
-    flag: '🇭🇰',
-    address: 'Hung To Road, Kwun Tong',
-    addressHref: 'https://maps.google.com/?q=Hung+To+Road+Kwun+Tong+Hong+Kong',
-    phone: '+852 2793 3681',
-    phoneHref: 'tel:+85227933681',
-  },
-]
+
 
 export default function Footer() {
   return (
@@ -34,12 +10,12 @@ export default function Footer() {
       <div className="max-w-[1280px] mx-auto px-6 md:px-12 pt-16 pb-10">
 
         {/* Heading */}
-        <h2
-          className="text-4xl md:text-5xl font-bold text-white leading-tight mb-6"
+        <h3
+          className="text-4xl md:text-5xl  text-white leading-tight mb-6"
           style={{ fontFamily: 'var(--font-questrial)' }}
         >
           Contact Us<br />Now!
-        </h2>
+        </h3>
 
         {/* Divider */}
         <div className="w-full h-px bg-white/10 mb-10" />

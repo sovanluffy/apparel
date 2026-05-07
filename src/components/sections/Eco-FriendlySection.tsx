@@ -3,51 +3,10 @@
 
 import { useState, useEffect } from 'react'
 import Image, { StaticImageData } from 'next/image'
+import { EcoFriendlySectionProps ,  Slide} from '@/types/Eco'
 
-type Slide = {
-  id: number
-  image: StaticImageData | string
-  titleLine1: string
-  titleHighlight: string
-  titleLine2: string
-  description: string
-}
 
-type EcoFriendlySectionProps = {
-  slides: [Slide, Slide]
-}
 
-/* ── Arrow Button ── */
-function ArrowButton({
-  label,
-  onClick,
-  disabled,
-  icon,
-}: {
-  label: string
-  onClick: () => void
-  disabled: boolean
-  icon: string
-}) {
-  return (
-    <button
-      onClick={onClick}
-      aria-label={label}
-      aria-disabled={disabled}
-      className={[
-        'w-11 h-11 flex items-center justify-center text-base flex-shrink-0',
-        'border transition-all duration-250',
-        disabled
-          ? 'border-[#2c2c2c] bg-[#1a1a1a] text-[#333] cursor-not-allowed'
-          : 'border-[#444] bg-transparent text-white cursor-pointer hover:bg-[#F97316] hover:border-[#F97316]',
-      ].join(' ')}
-    >
-      {icon}
-    </button>
-  )
-}
-
-/* ── Main Component ── */
 export default function EcoFriendlySection({ slides }: EcoFriendlySectionProps) {
   const [mounted, setMounted] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -58,53 +17,55 @@ export default function EcoFriendlySection({ slides }: EcoFriendlySectionProps) 
   useEffect(() => { setMounted(true) }, [])
 
   const goToSlide = (next: number, dir: 'left' | 'right') => {
-    if (animating) return
+    if (animating || next === currentIndex) return
     setDirection(dir)
     setAnimating(true)
     setTimeout(() => {
       setDisplayIndex(next)
       setCurrentIndex(next)
       setAnimating(false)
-    }, 450)
+    }, 400)
   }
 
-  const prev = () => { if (currentIndex !== 0) goToSlide(0, 'left') }
-  const next = () => { if (currentIndex !== 1) goToSlide(1, 'right') }
+  const prev = () => goToSlide(0, 'left')
+  const next = () => goToSlide(1, 'right')
 
   const slide = slides[displayIndex]
-  const isPrevDisabled = mounted && currentIndex === 0
-  const isNextDisabled = mounted && currentIndex === 1
+  const isPrevDisabled = !mounted || currentIndex === 0
+  const isNextDisabled = !mounted || currentIndex === 1
 
-  /* Animation classes */
-  const textAnimClass = animating
-    ? `opacity-0 ${direction === 'right' ? 'translate-y-4' : '-translate-y-4'}`
+  const fadeClass = animating
+    ? `opacity-0 ${direction === 'right' ? 'translate-y-3' : '-translate-y-3'}`
     : 'opacity-100 translate-y-0'
 
-  const imgAnimClass = animating
-    ? `opacity-0 ${direction === 'right' ? 'scale-105' : 'scale-95'}`
+  const imgClass = animating
+    ? 'opacity-0 scale-[1.03]'
     : 'opacity-100 scale-100'
 
   return (
-    <section className="w-full bg-[#0d0d0d] relative overflow-hidden">
+    <section className="w-full bg-[#0F0E0C] relative overflow-hidden">
 
-      {/* Top accent line */}
-      <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#F97316] via-[#F97316] to-transparent" style={{ backgroundSize: '40% 100%', backgroundRepeat: 'no-repeat' }} />
+      {/* Top accent bar */}
+      <div className="h-[2px] bg-primary w-[40%]" />
 
-      <div className="max-w-[1320px] mx-auto flex flex-col lg:flex-row items-stretch min-h-[560px]">
+      <div className="max-w-[1320px] mx-auto grid grid-cols-1 lg:grid-cols-2 min-h-[560px]">
 
         {/* ── Image panel ── */}
-        <div className="relative w-full lg:w-1/2 flex-shrink-0 overflow-hidden min-h-[300px] lg:min-h-[560px]">
+        <div className="relative overflow-hidden min-h-[300px] lg:min-h-[560px] bg-[#1A1814]">
 
-          {/* Orange L-bracket */}
-          <div className="absolute top-8 left-8 z-10 w-12 h-12 border-t-[3px] border-l-[3px] border-[#F97316] pointer-events-none" />
+          {/* L-bracket corner */}
+          <div className="absolute top-6 left-6 z-10 w-10 h-10
+            border-t-2 border-l-2 border-primary pointer-events-none" />
 
-          {/* Slide counter on image */}
-          <div className="absolute top-8 right-6 z-10 font-[var(--font-questrial)] text-[11px] tracking-[0.15em] text-white/35 font-semibold">
-            {displayIndex === 0 ? '01' : '02'}&nbsp;/&nbsp;02
+          {/* Slide counter */}
+          <div className="absolute top-6 right-5 z-10
+            text-[10px] tracking-[0.16em] text-white/25">
+            {String(displayIndex + 1).padStart(2, '0')} / 02
           </div>
 
           {/* Image */}
-          <div className={`relative w-full h-full min-h-[300px] lg:min-h-[560px] transition-all duration-[450ms] ease-out ${imgAnimClass}`}>
+          <div className={`relative w-full h-full min-h-[300px] lg:min-h-[560px]
+            transition-all duration-[400ms] ease-out ${imgClass}`}>
             <Image
               src={slide.image}
               alt={slide.titleLine1}
@@ -112,75 +73,137 @@ export default function EcoFriendlySection({ slides }: EcoFriendlySectionProps) 
               className="object-cover object-top"
               priority
             />
-            {/* Fade to black on right edge — desktop only */}
-            <div className="absolute inset-0 hidden lg:block bg-gradient-to-r from-transparent via-transparent to-[#0d0d0d]" />
-            {/* Fade to black on bottom edge — mobile only */}
-            <div className="absolute inset-0 lg:hidden bg-gradient-to-b from-transparent via-transparent to-[#0d0d0d]" />
+            {/* Fade to bg on right — desktop */}
+            <div className="absolute inset-0 hidden lg:block
+              bg-gradient-to-r from-transparent via-transparent to-[#0F0E0C]" />
+            {/* Fade to bg on bottom — mobile */}
+            <div className="absolute inset-0 lg:hidden
+              bg-gradient-to-b from-transparent via-transparent to-[#0F0E0C]" />
           </div>
         </div>
 
         {/* ── Content panel ── */}
-        <div className="flex-1 flex flex-col justify-center px-6 py-12 lg:px-16 lg:py-18 relative">
+        <div className="flex flex-col bg-[#0F0E0C]">
 
-          {/* Vertical orange line — desktop only */}
-          <div className="absolute left-0 top-[20%] bottom-[20%] w-[2px] bg-[#F97316] opacity-60 hidden lg:block" />
-
-          {/* Tag */}
-          <div
-            className={`transition-all duration-[450ms] ease-out mb-5 ${textAnimClass}`}
-            style={{ transitionDelay: '0ms' }}
-          >
-            <span className="font-[var(--font-questrial)] text-[11px] tracking-[0.2em] uppercase text-[#F97316] font-semibold">
-              Eco Initiative
-            </span>
+          {/* Folder tabs */}
+          <div className="flex px-6 pt-8 sm:px-10 lg:px-16">
+            {slides.map((s, i) => (
+              <button
+                key={s.id}
+                onClick={() => goToSlide(i, i > currentIndex ? 'right' : 'left')}
+                className={`
+                  px-5 py-2.5 text-[10px] tracking-[0.16em] uppercase
+                  transition-all duration-200 font-questrial
+                  ${i === currentIndex
+                    ? 'text-primary border border-primary border-b-[#0F0E0C] -mb-px bg-[#0F0E0C] relative z-10'
+                    : 'text-white/30 border border-transparent hover:text-white/60'
+                  }
+                `}
+              >
+                Initiative {String(i + 1).padStart(2, '0')}
+              </button>
+            ))}
           </div>
 
-          {/* Title */}
-          <h2
-            className={`transition-all duration-[450ms] ease-out font-[var(--font-questrial)] text-3xl lg:text-[clamp(28px,2.6vw,40px)] font-bold text-white leading-[1.2] tracking-[-0.01em] mb-6 ${textAnimClass}`}
-            style={{ transitionDelay: '60ms' }}
-          >
-            {slide.titleLine1}
-            <br />
-            <span className="text-[#F97316]">{slide.titleHighlight}</span>
-            <br />
-            {slide.titleLine2}
-          </h2>
+          {/* Folder content box */}
+          <div className="flex-1 px-6 pb-10 sm:px-10 lg:px-16 lg:pb-14">
+            <div className="h-full border border-primary/60 border-t-primary
+              p-8 lg:p-10 flex flex-col justify-center relative">
 
-          {/* Divider */}
-          <div
-            className={`transition-all duration-[450ms] ease-out w-10 h-px bg-[#2e2e2e] mb-6 ${textAnimClass}`}
-            style={{ transitionDelay: '100ms' }}
-          />
+              {/* Vertical accent line */}
+              <div className="absolute left-0 top-[20%] bottom-[20%]
+                w-[2px] bg-primary opacity-50 hidden lg:block" />
 
-          {/* Description */}
-          <p
-            className={`transition-all duration-[450ms] ease-out font-[var(--font-questrial)] text-[15px] text-[#6b7280] leading-[1.9] mb-12 max-w-[380px] ${textAnimClass}`}
-            style={{ transitionDelay: '120ms' }}
-          >
-            {slide.description}
-          </p>
+              {/* Eyebrow */}
+              <div className={`transition-all duration-[400ms] ease-out mb-4 ${fadeClass}`}
+                style={{ transitionDelay: '0ms' }}>
+                <span className="text-[10px] tracking-[0.22em] uppercase text-primary">
+                  Eco Initiative
+                </span>
+              </div>
 
-          {/* Arrows + progress */}
-          <div
-            className={`transition-all duration-[450ms] ease-out flex items-center gap-4 ${textAnimClass}`}
-            style={{ transitionDelay: '150ms' }}
-          >
-            <ArrowButton label="Previous slide" onClick={prev} disabled={isPrevDisabled} icon="←" />
-            <ArrowButton label="Next slide"     onClick={next} disabled={isNextDisabled} icon="→" />
+              {/* Heading */}
+              <h2
+                className={`transition-all duration-[400ms] ease-out
+                  text-[28px] sm:text-[32px] lg:text-[36px]
+                  font-normal text-[#F5F0E8] leading-[1.15] mb-5 ${fadeClass}`}
+                style={{ transitionDelay: '50ms' }}
+              >
+                {slide.titleLine1}
+                <br />
+                <span className="text-primary">{slide.titleHighlight}</span>
+                <br />
+                {slide.titleLine2}
+              </h2>
 
-            {/* Progress track */}
-            <div className="relative h-px bg-[#1f1f1f] w-24 flex-shrink-0">
+              {/* Divider */}
               <div
-                className="absolute top-0 left-0 h-px bg-[#F97316] transition-all duration-[400ms] ease-out"
-                style={{ width: displayIndex === 0 ? '50%' : '100%' }}
+                className={`transition-all duration-[400ms] ease-out
+                  w-8 h-px bg-white/10 mb-5 ${fadeClass}`}
+                style={{ transitionDelay: '80ms' }}
               />
+
+              {/* Description */}
+              <p
+                className={`transition-all duration-[400ms] ease-out
+                  text-[14px] text-paragraph leading-[1.9] mb-8
+                  max-w-[360px] ${fadeClass}`}
+                style={{ transitionDelay: '100ms' }}
+              >
+                {slide.description}
+              </p>
+
+              {/* Arrows + progress */}
+              <div
+                className={`transition-all duration-[400ms] ease-out
+                  flex items-center gap-0.5 ${fadeClass}`}
+                style={{ transitionDelay: '130ms' }}
+              >
+                <button
+                  onClick={prev}
+                  aria-label="Previous slide"
+                  disabled={isPrevDisabled}
+                  className={`
+                    w-11 h-11 flex items-center justify-center text-[15px]
+                    border transition-all duration-200
+                    ${isPrevDisabled
+                      ? 'border-white/10 text-white/15 cursor-not-allowed'
+                      : 'border-white/20 text-white/50 cursor-pointer hover:bg-primary hover:border-primary hover:text-white'
+                    }
+                  `}
+                >
+                  ←
+                </button>
+                <button
+                  onClick={next}
+                  aria-label="Next slide"
+                  disabled={isNextDisabled}
+                  className={`
+                    w-11 h-11 flex items-center justify-center text-[15px]
+                    border transition-all duration-200
+                    ${isNextDisabled
+                      ? 'border-white/10 text-white/15 cursor-not-allowed'
+                      : 'border-white/20 text-white/50 cursor-pointer hover:bg-primary hover:border-primary hover:text-white'
+                    }
+                  `}
+                >
+                  →
+                </button>
+
+                {/* Progress track */}
+                <div className="relative h-px bg-white/10 w-20 ml-4 flex-shrink-0">
+                  <div
+                    className="absolute top-0 left-0 h-px bg-primary transition-all duration-[400ms] ease-out"
+                    style={{ width: displayIndex === 0 ? '50%' : '100%' }}
+                  />
+                </div>
+              </div>
+
             </div>
           </div>
-
         </div>
-      </div>
 
+      </div>
     </section>
   )
 }
