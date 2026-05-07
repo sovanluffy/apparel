@@ -44,16 +44,17 @@ export default function HeroSection() {
   }, [goToNext])
 
   return (
-    <section className="relative w-full overflow-hidden bg-[#0C0B09]"
-      style={{ height: 'min(90vh, 720px)' }}>
-
+    <section
+      className="relative w-full overflow-hidden bg-[#0C0B09]"
+      style={{ height: 'min(90vh, 720px)' }}
+    >
       {/* Progress bar */}
       <div
         className="absolute top-0 left-0 h-[2px] z-20 transition-none"
         style={{ width: `${progress}%`, backgroundColor: 'var(--primary)' }}
       />
 
-      {/* Slide number */}
+      {/* Slide number — desktop only */}
       <div className="absolute top-6 right-6 z-20 text-[11px] tracking-[0.14em] text-white/30 hidden sm:block">
         {String(current + 1).padStart(2, '0')} / {String(HERO_SLIDES.length).padStart(2, '0')}
       </div>
@@ -73,14 +74,14 @@ export default function HeroSection() {
             className="object-cover object-center"
             priority={index === 0}
           />
-          <div className="absolute inset-0 bg-black/45" />
+          <div className="absolute inset-0 bg-black/50" />
         </div>
       ))}
 
       {/* Content */}
       <div
         className="absolute inset-0 z-20 flex flex-col justify-end
-          px-6 pb-10
+          px-5 pb-24
           sm:px-10 sm:pb-12
           lg:px-16 lg:pb-14"
         style={{
@@ -88,15 +89,17 @@ export default function HeroSection() {
           transition: 'opacity 0.25s ease',
         }}
       >
-        <p className="text-[10px] tracking-[0.22em] uppercase mb-3"
-          style={{ color: 'var(--primary)' }}>
+        <p
+          className="text-[10px] tracking-[0.22em] uppercase mb-2"
+          style={{ color: 'var(--primary)' }}
+        >
           {HERO_SLIDES[current].subtitle}
         </p>
 
         <h1
-          className="leading-[1.08] mb-2
-            text-[36px]
-            sm:text-[48px]
+          className="mb-2
+            text-[30px] leading-[1.1]
+            sm:text-[48px] sm:leading-[1.08]
             lg:text-[60px]"
           style={{
             fontFamily: 'var(--font-display)',
@@ -107,13 +110,14 @@ export default function HeroSection() {
           {HERO_SLIDES[current].title}
         </h1>
 
-        <h4 className="text-[11px] tracking-[0.18em] uppercase text-white mb-7">
+        <h4 className="text-[10px] tracking-[0.18em] uppercase text-white/60 mb-6 sm:mb-7">
           Modern · Sustainable · Style
         </h4>
 
-        <div className="flex items-center gap-5 flex-wrap">
+        <div className="flex items-center gap-4 flex-wrap">
           <button
-            className="text-[11px] tracking-[0.14em] uppercase font-medium px-7 py-3
+            className="text-[11px] tracking-[0.14em] uppercase font-medium
+              px-6 py-3 min-h-[44px]
               transition-opacity duration-200 hover:opacity-85"
             style={{
               backgroundColor: 'var(--primary)',
@@ -125,7 +129,7 @@ export default function HeroSection() {
           </button>
           <button
             className="text-[11px] tracking-[0.14em] uppercase text-white/50
-              border-b border-white/25 pb-0.5
+              border-b border-white/25 pb-0.5 min-h-[44px]
               transition-colors duration-200 hover:text-white hover:border-white/60"
             style={{ fontFamily: 'var(--font-body)', background: 'transparent' }}
           >
@@ -134,7 +138,7 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* Vertical dot indicators */}
+      {/* Vertical dot indicators — desktop only */}
       <div className="absolute right-6 top-1/2 -translate-y-1/2 z-30 hidden sm:flex flex-col gap-2">
         {HERO_SLIDES.map((_, index) => (
           <button
@@ -146,7 +150,8 @@ export default function HeroSection() {
               width: '5px',
               height: index === current ? '20px' : '5px',
               borderRadius: index === current ? '3px' : '50%',
-              backgroundColor: index === current ? 'var(--primary)' : 'rgba(255,255,255,0.25)',
+              backgroundColor:
+                index === current ? 'var(--primary)' : 'rgba(255,255,255,0.25)',
               border: 'none',
               cursor: 'pointer',
               padding: 0,
@@ -155,9 +160,11 @@ export default function HeroSection() {
         ))}
       </div>
 
-      {/* Arrow controls */}
-      <div className="absolute z-30 flex gap-px"
-        style={{ bottom: '3.5rem', right: '5rem' }}>
+      {/* Arrow controls — desktop */}
+      <div
+        className="absolute z-30 hidden sm:flex gap-px"
+        style={{ bottom: '3.5rem', right: '5rem' }}
+      >
         <button
           onClick={goToPrev}
           aria-label="Previous slide"
@@ -184,27 +191,56 @@ export default function HeroSection() {
         </button>
       </div>
 
-      {/* Mobile dot indicators (bottom center) */}
-      <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-30 flex gap-2 sm:hidden">
-        {HERO_SLIDES.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => goTo(index)}
-            aria-label={`Go to slide ${index + 1}`}
-            className="transition-all duration-300"
-            style={{
-              width: index === current ? '16px' : '5px',
-              height: '5px',
-              borderRadius: index === current ? '3px' : '50%',
-              backgroundColor: index === current ? 'var(--primary)' : 'rgba(255,255,255,0.3)',
-              border: 'none',
-              cursor: 'pointer',
-              padding: 0,
-            }}
-          />
-        ))}
-      </div>
+      {/* Mobile bottom bar — dots + arrows together */}
+      <div className="absolute bottom-5 left-0 right-0 z-30 flex items-center justify-between px-5 sm:hidden">
+        {/* Prev arrow */}
+        <button
+          onClick={goToPrev}
+          aria-label="Previous slide"
+          className="w-11 h-11 flex items-center justify-center text-[20px] text-white/50"
+          style={{
+            background: 'rgba(255,255,255,0.06)',
+            border: '0.5px solid rgba(255,255,255,0.12)',
+          }}
+        >
+          ‹
+        </button>
 
+        {/* Dot indicators */}
+        <div className="flex items-center gap-[6px]">
+          {HERO_SLIDES.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => goTo(index)}
+              aria-label={`Go to slide ${index + 1}`}
+              style={{
+                width: index === current ? '18px' : '5px',
+                height: '5px',
+                borderRadius: index === current ? '3px' : '50%',
+                backgroundColor:
+                  index === current ? 'var(--primary)' : 'rgba(255,255,255,0.3)',
+                border: 'none',
+                cursor: 'pointer',
+                padding: 0,
+                transition: 'all 0.3s',
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Next arrow */}
+        <button
+          onClick={goToNext}
+          aria-label="Next slide"
+          className="w-11 h-11 flex items-center justify-center text-[20px] text-white/50"
+          style={{
+            background: 'rgba(255,255,255,0.06)',
+            border: '0.5px solid rgba(255,255,255,0.12)',
+          }}
+        >
+          ›
+        </button>
+      </div>
     </section>
   )
 }
