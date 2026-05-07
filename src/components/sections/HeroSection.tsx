@@ -67,13 +67,18 @@ export default function HeroSection() {
             index === current ? 'opacity-100 z-10' : 'opacity-0 z-0'
           }`}
         >
-          <Image
-            src={slide.src}
-            alt={slide.title}
-            fill
-            className="object-cover object-center"
-            priority={index === 0}
-          />
+        {slide.type === 'video' ? (
+  <video
+    src={slide.src}
+    autoPlay
+    muted
+    loop
+    playsInline
+    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+  />
+) : (
+  <Image src={slide.src} alt={slide.title} fill />
+)}
           <div className="absolute inset-0 bg-black/50" />
         </div>
       ))}
